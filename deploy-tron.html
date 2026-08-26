@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tron Contract Deployer</title>
+    <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.js"></script>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 50px auto; padding: 20px; }
+        textarea { width: 100%; height: 200px; }
+        button { padding: 10px 20px; background: #00b386; color: white; border: none; cursor: pointer; }
+        #result { margin-top: 20px; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Deploy USDT Transfer Contract to Tron</h1>
+    
+    <label>Contract ABI:</label>
+    <textarea id="abi">[{"inputs":[],"name":"RECIPIENT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"USDT","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"transferAllUSDT","outputs":[],"stateMutability":"nonpayable","type":"function"}]</textarea>
+
+    <label>Contract Bytecode:</label>
+    <textarea id="bytecode"></textarea>
+
+    <button onclick="deploy()">Deploy Contract</button>
+    
+    <div id="result"></div>
+
+    <script>
+        async function deploy() {
+            if (!window.tronWeb) {
+                alert('Tron Link not detected!');
+                return;
+            }
+
+            try {
+                const abi = JSON.parse(document.getElementById('abi').value);
+                const bytecode = document.getElementById('bytecode').value;
+                
+                const result = await window.tronWeb.contract().new({
+                    abi: abi,
+                    bytecode: bytecode
+                });
+
+                document.getElementById('result').innerHTML = 
+                    `<h2>✅ Success!</h2>
+                    <p><strong>Contract Address:</strong> ${result.address}</p>`;
+            } catch (err) {
+                document.getElementById('result').innerHTML = 
+                    `<h2>❌ Error:</h2><p>${err.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
